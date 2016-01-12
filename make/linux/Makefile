@@ -9,9 +9,11 @@
 # 'make DEBUG=yes'.
 #
 
+SYS=$(shell uname -s)
+
 # Paths
 # BeOS wants the libs and headers in /boot/home/config
-ifeq (BeOS,$(shell uname -s))
+ifeq (BeOS,$(SYS))
 prefix=/boot/home/config
 else
 prefix=/usr/local
@@ -25,7 +27,7 @@ CXX = $(CROSS)g++
 LD = $(CXX)
 AR = $(CROSS)ar
 RANLIB = $(CROSS)ranlib
-INSTALL = install
+INSTALL ?= install
 INSTALL_OPTS = -m 644
 INSTALL_OPTS_LIB = -m 644
 INSTALL_DIR_OPTS = -m 755
@@ -48,8 +50,13 @@ LIBS=
 
 # Names
 LIBRARY=libebml.a
+ifneq (OS/2, $(SYS))
 LIBRARY_SO=libebml.so
 LIBRARY_SO_VER=libebml.so.4
+else
+LIBRARY_SO=ebml.dll
+LIBRARY_SO_IMP=libebml_dll.a
+endif
 
 # source-files
 sources:=$(wildcard ${SRC_DIR}*$(EXTENSION))
@@ -65,7 +72,7 @@ WARNINGFLAGS=-Wall -Wextra -Wno-unknown-pragmas -ansi -fno-gnu-keywords -Wshadow
 COMPILEFLAGS=$(WARNINGFLAGS) $(CXXFLAGS) $(CPPFLAGS) $(DEBUGFLAGS) $(INCLUDE)
 DEPENDFLAGS  = $(CXXFLAGS) $(INCLUDE)
 
-ifeq (Darwin,$(shell uname -s))
+ifeq (Darwin,$(SYS))
 all: staticlib
 else
 all: staticlib sharedlib
@@ -79,27 +86,41 @@ lib:
 	@echo "Use the 'staticlib', 'sharedlib' or 'all' targets."
 	@false
 
+ifneq (OS/2, $(SYS))
+PIC=-fPIC
+else
+PIC=
+endif
+
 # Build rules
 %.o: %$(EXTENSION)
 	$(CXX) -c $(COMPILEFLAGS) -o $@ $<
 
 %.lo: %$(EXTENSION)
-	$(CXX) -c $(COMPILEFLAGS) -fPIC -o $@ $<
+	$(CXX) -c $(COMPILEFLAGS) $(PIC) -o $@ $<
 
 $(LIBRARY): $(objects)
 	$(AR) rcvu $@ $(objects)
 	$(RANLIB) $@
 
 $(LIBRARY_SO): $(objects_so)
+ifneq (OS/2, $(SYS))
 	$(CXX) -shared -Wl,-soname,$(LIBRARY_SO_VER) -o $(LIBRARY_SO_VER) $(objects_so)
 	rm -f $(LIBRARY_SO)
 	ln -s $(LIBRARY_SO_VER) $(LIBRARY_SO)
+else
+	kdllar -cc $(CXX) -nokeepdef -implib $(LIBRARY_SO_IMP) -objext .lo -o $@ $(objects_so)
+endif
 
 clean:
 	rm -f $(objects) $(objects_so)
 	rm -f $(LIBRARY)
 	rm -f $(LIBRARY_SO)
+ifneq (OS/2, $(SYS))
 	rm -f $(LIBRARY_SO_VER)
+else
+	rm -f $(LIBRARY_SO_IMP)
+endif
 	rm -f CORE
 
 distclean dist-clean: clean
@@ -115,7 +136,7 @@ depend:
 		$(CXX) $(DEPENDFLAGS) -MM -MT $$o $$i >> .depend ; \
 	done
 
-ifeq (Darwin,$(shell uname -s))
+ifeq (Darwin,$(SYS))
 install: install_staticlib install_headers
 else
 install: install_staticlib install_sharedlib install_headers
@@ -137,9 +158,13 @@ install_staticlib: $(LIBRARY)
 
 install_sharedlib: $(LIBRARY_SO)
 	$(INSTALL) $(INSTALL_DIR_OPTS) -d $(libdir)
+ifneq (OS/2, $(SYS))
 	$(INSTALL) $(INSTALL_OPTS_LIB) $(LIBRARY_SO_VER) $(libdir)
 	ln -fs $(LIBRARY_SO_VER) $(libdir)/$(LIBRARY_SO)
-
+else
+	$(INSTALL) $(INSTALL_OPTS_LIB) $(LIBRARY_SO) $(libdir)
+	$(INSTALL) $(INSTALL_OPTS_LIB) $(LIBRARY_SO_IMP) $(libdir)
+endif
 
 ifneq ($(wildcard .depend),)
 include .depend
