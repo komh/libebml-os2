@@ -19,9 +19,9 @@
 **
 ** You should have received a copy of the GNU Lesser General Public
 ** License along with this library; if not, write to the Free Software
-** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 **
-** See http://www.matroska.org/license/lgpl/ for LGPL licensing information.
+** See http://www.gnu.org/licenses/lgpl-2.1.html for LGPL licensing information.
 **
 ** Contact license@matroska.org if any conditions of this licensing are
 ** not clear to you.
@@ -50,7 +50,7 @@ extern "C" {
 
 // Changed char is unsigned now (signedness was causing trouble in endil)
 #if defined(_WIN32)
-# if !defined(__GNUC__)		// Microsoft Visual C++
+# if !defined(__GNUC__)    // Microsoft Visual C++
     typedef signed __int64 int64;
     typedef signed __int32 int32;
     typedef signed __int16 int16;
@@ -74,7 +74,7 @@ extern "C" {
 # endif // __GNUC__
 #elif defined(__BEOS__)
 #include <SupportDefs.h>
-#elif defined(DJGPP)				/* SL : DJGPP doesn't support POSIX types ???? */
+#elif defined(DJGPP)        /* SL : DJGPP doesn't support POSIX types ???? */
     typedef signed long long int64;
     typedef signed long int32;
     typedef signed short int16;
@@ -108,10 +108,10 @@ extern "C" {
     typedef int16_t int16;
     typedef int8_t int8;
     typedef int8_t character;
-    typedef u_int64_t uint64;
-    typedef u_int32_t uint32;
-    typedef u_int16_t uint16;
-    typedef u_int8_t uint8;
+    typedef uint64_t uint64;
+    typedef uint32_t uint32;
+    typedef uint16_t uint16;
+    typedef uint8_t uint8;
 #endif /* anything else */
 
 typedef uint8  binary;

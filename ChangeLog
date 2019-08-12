@@ -1,3 +1,207 @@
+2019-05-27  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Released v1.3.9.
+
+2019-05-27  evpobr  <evpobr@gmail.com>
+
+        * Build system: fixed symbol visibility issue causing linker
+        failures since 1.3.8.
+
+2019-05-25  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Released v1.3.8.
+
+2019-05-19  evpobr  <evpobr@gmail.com>
+
+        * Build system: various fixes to the cmake rules regarding
+        visibility, naming and building DLLs on Windows.
+
+2019-03-12  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Released v1.3.7.
+
+2019-03-06  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Fixed the handling of Unicode codepoints > U+FFFF.
+
+2018-04-23  Steve Lhomme <slhomme@matroska.org>
+
+        * Fixed building on Windows with cmake.
+
+2018-04-21  Steve Lhomme <slhomme@matroska.org>
+
+        * Fixed building with gcc >= 7.
+
+2018-04-20  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Released v1.3.6.
+
+2018-04-19  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Converted the build system from autoconf/automake to
+        cmake. Patches by Github user "evpobr" with fixes by myself.
+
+2018-04-18  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Fixed undefined behavior when reading signed integers with
+        negative values from files (though compilers implemented this the
+        way we wanted them to already).
+
+        * Fixed a small memory leak when reading an element runs into an
+        I/O exception (e.g. due to having reached the end of the file).
+
+2018-02-15  Steve Lhomme <slhomme@matroska.org>
+
+        * Fixed the EbmlMaster::GetDataStart() function returning wrong
+        values for elements with an infinite/unknown size.
+
+2018-01-23  Steve Lhomme <slhomme@matroska.org>
+
+        * Fixed finding the next element ID when garbage data is
+        encountered during the scan for the ID.
+
+2017-11-27  Steve Lhomme <slhomme@matroska.org>
+
+        * Fixed several potential situations where reading child element
+        data could exceed the parent element's size.
+
+2017-11-18  Steve Lhomme <slhomme@matroska.org>
+
+        * Added a code of conduct to the project.
+
+2017-08-19  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Released v1.3.5.
+
+2017-08-09  Moritz Bunkus  <moritz@bunkus.org>
+
+        * The function EbmlMaster::CheckMandatory() will now only return
+        false if a mandatory element is missing for which there's no
+        default value in the specifications. This means that callers such
+        as EbmlMaster::UpdateSize() and by extension EbmlMaster::Render()
+        will not insist on all mandatory elements being present anymore,
+        but only those for which there's no default value.
+
+2017-08-06  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Added a template function `FindNextChild`. Patch by C.W. Betts.
+
+2017-08-04  Steve Lhomme <slhomme@matroska.org>
+
+        * Fix reading and EBML element even though the ID was not found within
+        the allowed reading limit.
+
+2016-11-28  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Fixed an instance of undefined behavior in
+        EbmlElement::GetSemantic() due to binding a dereferenced null
+        pointer to a reference.
+
+2016-07-15  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Replaced the outdated address of the Free Software Foundation
+        with their current one. Fixes #15.
+
+2016-07-02  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Released v1.3.4.
+
+2015-11-21  Moritz Bunkus  <moritz@bunkus.org>
+
+        * EbmlVersion.cpp: in order to enable deterministic builds the
+        EbmlCodeDate variable has been set to "Unknown" instead of the
+        date and time of compilation. Patch by Ed Schouten <ed@nuxi.nl>.
+
+2015-11-18  Moritz Bunkus  <moritz@bunkus.org>
+
+        * libebml_t.h: use C99-style integer typedefs instead of BSD-style
+        ones. Patch by Ed Schouten <ed@nuxi.nl>.
+
+2015-10-24  Moritz Bunkus  <moritz@bunkus.org>
+
+        * EbmlBinary.h: add #include <cstdlib> for compilation with clang
+        and libc++. Patch by Thomas Klausner <wiz@NetBSD.org>.
+
+2015-10-20  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Released v1.3.3.
+
+        * EbmlMaster::Read(): When the parser encountered a deeply nested
+        element with an infinite size then a following element of an upper
+        level was not propagated correctly. Instead the element with the
+        infinite size was added into the EBML element tree a second time
+        resulting in memory access after freeing it and multiple attempts
+        to free the same memory address during destruction. Fixes the
+        issue reported as Cisco TALOS-CAN-0037.
+
+        * EbmlElement::ReadCodedSizeValue(): Fixed an invalid memory
+        access. When reading a EBML variable length integer value a read
+        access beyond the end of the available buffer was possible if
+        fewer bytes were available than indicated by the first byte
+        resulting in a heap information leak.
+
+        * EbmlUnicodeString::UpdateFromUTF8(): Fixed an invalid memory
+        access. When reading from a UTF-8 string in which the length
+        indicated by a UTF-8 character's first byte exceeds the string's
+        actual number of bytes the parser would access beyond the end of
+        the string resulting in a heap information leak. Fixes the issue
+        reported as Cisco TALOS-CAN-0036.
+
+2015-10-17  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Released v1.3.2.
+
+2015-08-21  Steve Lhomme <robUx4@gmail.com>
+
+        * EbmlElement::FindNextElement(): Handle EOF when reading the
+        element size properly.
+
+2015-06-15  Steve Lhomme <robUx4@gmail.com
+
+        * Disable debug code for builds for the Windows App Store.
+
+2015-06-12  Cristian Morales Vega <reddwarf@opensuse.org>
+
+        * Update the license information: use latest official text for the
+        LGPL.
+
+2015-02-23  Steve Lhomme  <robux4@gmail.com>
+
+        * EbmlString::ValidateSize(): only allow the same maximum size as
+        EbmlBinary.
+
+2015-01-04  Moritz Bunkus  <moritz@bunkus.org>
+
+        * Released v1.3.1.
+
+        * EbmlElement::Render(): doesn't catch exceptions anymore. Instead
+        exceptions generated from the IOCallback class (e.g. if a write
+        failed) are propagated to the caller.
+
+2014-12-21  Moritz Bunkus  <moritz@bunkus.org>
+
+        * build system: switched the build system from hand-crafted
+        Makefiles to an autoconf/automake-based system. A pkg-config file
+        will be installed as well; its name is »libebml«. Patch by Jan
+        Engelhardt <jengelh@inai.de>.
+
+2014-12-20  Moritz Bunkus  <moritz@bunkus.org>
+
+        * EbmlMaster::Read(): when reading with SCOPE_ALL_DATA only those
+        elements that could successfully be read will be kept
+        (e.g. defective block groups will be dropped).
+
+2014-12-19  Moritz Bunkus  <moritz@bunkus.org>
+
+        * EbmlMemoryStream: add a new class for safe memory access that
+        throws exception on failures.
+
+2014-12-18  Moritz Bunkus  <moritz@bunkus.org>
+
+        * EbmlMaster: Fixed read() trying to calculate the end position of
+        elements with an unknown size. This avoids endless loops and
+        assertions in certain cases. See https://trac.bunkus.org/ticket/1089
+
 2013-03-19 mosu
 New 1.3.0 version:
     * Note that this version is not binary compatible to its predecessors.
@@ -606,7 +810,7 @@ New 0.8.0 version:
 2004-10-14 07:48  mosu
 
 	* trunk/libebml/src/EbmlUnicodeString.cpp: wchar.h doesn't exist on
-	  OpenBSD. Patch by Diego Petten� <dgp85 (a) users ! sourceforge !
+	  OpenBSD. Patch by Diego Pettenò <dgp85 (a) users ! sourceforge !
 	  net>.
 
 2004-09-26 10:03  mosu

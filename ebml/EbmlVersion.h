@@ -19,9 +19,9 @@
 **
 ** You should have received a copy of the GNU Lesser General Public
 ** License along with this library; if not, write to the Free Software
-** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 **
-** See http://www.matroska.org/license/lgpl/ for LGPL licensing information.
+** See http://www.gnu.org/licenses/lgpl-2.1.html for LGPL licensing information.
 **
 ** Contact license@matroska.org if any conditions of this licensing are
 ** not clear to you.
@@ -29,9 +29,9 @@
 **********************************************************************/
 
 /*!
-	\file
-	\version \$Id$
-	\author Steve Lhomme     <robux4 @ users.sf.net>
+  \file
+  \version \$Id$
+  \author Steve Lhomme     <robux4 @ users.sf.net>
 */
 #ifndef LIBEBML_VERSION_H
 #define LIBEBML_VERSION_H
@@ -42,13 +42,13 @@
 
 START_LIBEBML_NAMESPACE
 
-#define LIBEBML_VERSION 0x010300
+#define LIBEBML_VERSION 0x010309
 
-extern const std::string EbmlCodeVersion;
-extern const std::string EbmlCodeDate;
+extern const EBML_DLL_API std::string EbmlCodeVersion;
+extern const EBML_DLL_API std::string EbmlCodeDate;
 
 /*!
-	\todo Closer relation between an element and the context it comes from (context is an element attribute ?)
+  \todo Closer relation between an element and the context it comes from (context is an element attribute ?)
 */
 
 END_LIBEBML_NAMESPACE

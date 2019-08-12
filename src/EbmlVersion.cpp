@@ -19,9 +19,9 @@
 **
 ** You should have received a copy of the GNU Lesser General Public
 ** License along with this library; if not, write to the Free Software
-** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 **
-** See http://www.matroska.org/license/lgpl/ for LGPL licensing information.
+** See http://www.gnu.org/licenses/lgpl-2.1.html for LGPL licensing information.
 **
 ** Contact license@matroska.org if any conditions of this licensing are
 ** not clear to you.
@@ -29,16 +29,20 @@
 **********************************************************************/
 
 /*!
-	\file
-	\version \$Id: EbmlVersion.cpp 639 2004-07-09 20:59:14Z mosu $
-	\author Steve Lhomme     <robux4 @ users.sf.net>
+  \file
+  \version \$Id: EbmlVersion.cpp 639 2004-07-09 20:59:14Z mosu $
+  \author Steve Lhomme     <robux4 @ users.sf.net>
 */
 
 #include "ebml/EbmlVersion.h"
 
 START_LIBEBML_NAMESPACE
 
-const std::string EbmlCodeVersion = "1.3.0";
-const std::string EbmlCodeDate    = __TIMESTAMP__;
+const std::string EbmlCodeVersion = "1.3.9";
+
+// Up to version 1.3.3 this library exported a build date string. As
+// this made the build non-reproducible, replace it by a placeholder to
+// remain API compatible.
+const std::string EbmlCodeDate = "Unknown";
 
 END_LIBEBML_NAMESPACE

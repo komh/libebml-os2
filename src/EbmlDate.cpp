@@ -17,9 +17,9 @@
 **
 ** You should have received a copy of the GNU Lesser General Public
 ** License along with this library; if not, write to the Free Software
-** Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+** Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 **
-** See http://www.matroska.org/license/lgpl/ for LGPL licensing information.
+** See http://www.gnu.org/licenses/lgpl-2.1.html for LGPL licensing information.
 **
 ** Contact license@matroska.org if any conditions of this licensing are
 ** not clear to you.
@@ -27,9 +27,9 @@
 **********************************************************************/
 
 /*!
-	\file
-	\version \$Id: EbmlDate.cpp 1079 2005-03-03 13:18:14Z robux4 $
-	\author Steve Lhomme     <robux4 @ users.sf.net>
+  \file
+  \version \$Id: EbmlDate.cpp 1079 2005-03-03 13:18:14Z robux4 $
+  \author Steve Lhomme     <robux4 @ users.sf.net>
 */
 #include <cassert>
 
@@ -42,47 +42,45 @@ const uint64 EbmlDate::UnixEpochDelay = 978307200; // 2001/01/01 00:00:00 UTC
 EbmlDate::EbmlDate(const EbmlDate & ElementToClone)
 :EbmlElement(ElementToClone)
 {
-	myDate = ElementToClone.myDate;
+  myDate = ElementToClone.myDate;
 }
 
 filepos_t EbmlDate::ReadData(IOCallback & input, ScopeMode ReadFully)
 {
-	if (ReadFully != SCOPE_NO_DATA)
-	{
-		if (GetSize() != 0) {
-			assert(GetSize() == 8);
-			binary Buffer[8];
-			input.readFully(Buffer, GetSize());
+  if ((ReadFully == SCOPE_NO_DATA) || (GetSize() == 0))
+    return GetSize();
 
-			big_int64 b64;
-			b64.Eval(Buffer);
+  assert(GetSize() == 8);
+  binary Buffer[8];
+  input.readFully(Buffer, GetSize());
 
-			myDate = b64;
-			SetValueIsSet();
-		}
-	}
+  big_int64 b64;
+  b64.Eval(Buffer);
 
-	return GetSize();
+  myDate = b64;
+  SetValueIsSet();
+
+  return GetSize();
 }
 
 filepos_t EbmlDate::RenderData(IOCallback & output, bool /* bForceRender */, bool  /* bWithDefault */)
 {
-	if (GetSize() != 0) {
-		assert(GetSize() == 8);
-		big_int64 b64(myDate);
+  if (GetSize() != 0) {
+    assert(GetSize() == 8);
+    big_int64 b64(myDate);
 
-		output.writeFully(&b64.endian(),GetSize());
-	}
+    output.writeFully(&b64.endian(),GetSize());
+  }
 
-	return GetSize();
+  return GetSize();
 }
 
 bool EbmlDate::IsSmallerThan(const EbmlElement *Cmp) const
 {
-	if (EbmlId(*this) == EbmlId(*Cmp))
-		return this->myDate < static_cast<const EbmlDate *>(Cmp)->myDate;
-	else
-		return false;
+  if (EbmlId(*this) == EbmlId(*Cmp))
+    return this->myDate < static_cast<const EbmlDate *>(Cmp)->myDate;
+  else
+    return false;
 }
 
 END_LIBEBML_NAMESPACE
