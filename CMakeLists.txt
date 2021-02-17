@@ -83,8 +83,6 @@ endif()
 set_target_properties(ebml PROPERTIES
   VERSION 5.0.0
   SOVERSION 5
-  CXX_VISIBILITY_PRESET hidden
-  VISIBILITY_INLINES_HIDDEN ON
 )
 target_include_directories(ebml
   PRIVATE
@@ -102,6 +100,14 @@ target_sources(ebml
   PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}/ebml_export.h
 )
+
+# generate_export_header() tests hidden visibility. Use it.
+if(COMPILER_HAS_HIDDEN_VISIBILITY AND COMPILER_HAS_HIDDEN_INLINE_VISIBILITY)
+  set_target_properties(ebml PROPERTIES
+    CXX_VISIBILITY_PRESET hidden
+    VISIBILITY_INLINES_HIDDEN ON
+  )
+endif()
 
 if(NOT BUILD_SHARED_LIBS)
   target_compile_definitions(ebml PUBLIC EBML_STATIC_DEFINE)
