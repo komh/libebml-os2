@@ -217,8 +217,8 @@ filepos_t EbmlCrc32::RenderData(IOCallback & output, bool /* bForceRender */, bo
 
   if (Result < GetDefaultSize()) {
     // pad the rest with 0
-    binary *Pad = new (std::nothrow) binary[GetDefaultSize() - Result];
-    if (Pad != NULL) {
+    auto Pad = new (std::nothrow) binary[GetDefaultSize() - Result];
+    if (Pad != nullptr) {
       memset(Pad, 0x00, GetDefaultSize() - Result);
       output.writeFully(Pad, GetDefaultSize() - Result);
 
@@ -233,8 +233,8 @@ filepos_t EbmlCrc32::RenderData(IOCallback & output, bool /* bForceRender */, bo
 filepos_t EbmlCrc32::ReadData(IOCallback & input, ScopeMode ReadFully)
 {
   if (ReadFully != SCOPE_NO_DATA) {
-    binary *Buffer = new (std::nothrow) binary[GetSize()];
-    if (Buffer == NULL) {
+    auto Buffer = new (std::nothrow) binary[GetSize()];
+    if (Buffer == nullptr) {
       // impossible to read, skip it
       input.setFilePointer(GetSize(), seek_current);
     } else {
@@ -257,7 +257,7 @@ bool EbmlCrc32::CheckCRC(uint32 inputCRC, const binary *input, uint32 length)
     crc = m_tab[CRC32_INDEX(crc) ^ *input++] ^ CRC32_SHIFTED(crc);
 
   while (length >= 4) {
-    crc ^= *(const uint32 *)input;
+    crc ^= *reinterpret_cast<const uint32 *>(input);
     crc = m_tab[CRC32_INDEX(crc)] ^ CRC32_SHIFTED(crc);
     crc = m_tab[CRC32_INDEX(crc)] ^ CRC32_SHIFTED(crc);
     crc = m_tab[CRC32_INDEX(crc)] ^ CRC32_SHIFTED(crc);
@@ -272,16 +272,13 @@ bool EbmlCrc32::CheckCRC(uint32 inputCRC, const binary *input, uint32 length)
   //Now we finalize the CRC32
   crc ^= CRC32_NEGL;
 
-  if (crc == inputCRC)
-    return true;
-
-  return false;
+  return crc == inputCRC;
 }
 
-void EbmlCrc32::FillCRC32(const binary *s, uint32 n)
+void EbmlCrc32::FillCRC32(const binary *input, uint32 length)
 {
   ResetCRC();
-  Update(s, n);
+  Update(input, length);
   Finalize();
 
   /*uint32 crc = CRC32_NEGL;
@@ -320,7 +317,7 @@ void EbmlCrc32::Update(const binary *input, uint32 length)
     crc = m_tab[CRC32_INDEX(crc) ^ *input++] ^ CRC32_SHIFTED(crc);
 
   while (length >= 4) {
-    crc ^= *(const uint32 *)input;
+    crc ^= *reinterpret_cast<const uint32 *>(input);
     crc = m_tab[CRC32_INDEX(crc)] ^ CRC32_SHIFTED(crc);
     crc = m_tab[CRC32_INDEX(crc)] ^ CRC32_SHIFTED(crc);
     crc = m_tab[CRC32_INDEX(crc)] ^ CRC32_SHIFTED(crc);

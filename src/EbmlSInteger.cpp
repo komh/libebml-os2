@@ -45,13 +45,13 @@ namespace {
 
 int64
 ToSigned(uint64 u) {
-  if (u <= std::numeric_limits<int64>::max())
+  if (u <= static_cast<uint64>(std::numeric_limits<int64>::max()))
     return static_cast<int64>(u);
 
   return static_cast<int64>(u - std::numeric_limits<int64>::min()) + std::numeric_limits<int64>::min();
 }
 
-}
+} // namespace
 
 START_LIBEBML_NAMESPACE
 
@@ -63,13 +63,6 @@ EbmlSInteger::EbmlSInteger(int64 aDefaultValue)
   :EbmlElement(DEFAULT_INT_SIZE, true), Value(aDefaultValue)
 {
   SetDefaultIsSet();
-}
-
-EbmlSInteger::EbmlSInteger(const EbmlSInteger & ElementToClone)
-  :EbmlElement(ElementToClone)
-  ,Value(ElementToClone.Value)
-  ,DefaultValue(ElementToClone.DefaultValue)
-{
 }
 
 EbmlSInteger::operator int8() const {return  int8(Value);}
@@ -163,8 +156,8 @@ bool EbmlSInteger::IsSmallerThan(const EbmlElement *Cmp) const
 {
   if (EbmlId(*this) == EbmlId(*Cmp))
     return this->Value < static_cast<const EbmlSInteger *>(Cmp)->Value;
-  else
-    return false;
+
+  return false;
 }
 
 END_LIBEBML_NAMESPACE

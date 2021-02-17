@@ -1,3 +1,58 @@
+2021-01-04  Moritz Bunkus  <mo@bunkus.online>
+
+        * Release v1.4.1.
+
+2021-01-02  Moritz Bunkus  <mo@bunkus.online>
+
+        * Fixed a case EbmlMaster::Read where the element returned via
+        UpperEltFound and FountElt points to a just-deleted element,
+        causing callers to think the memory returned is valid, potentially
+        leading to use-after-free/double-free errors. This can happen if
+        the specific element's Read function throws an exception when
+        encountering certain invalid data constellations.
+
+2020-06-27  Moritz Bunkus  <mo@bunkus.online>
+
+        * Released v1.4.0.
+
+        * Due to breaking ABI the soname version has been bumped to 5.0.0.
+
+        * Default symbol visibility is now "hidden", reducing binary size.
+
+        * Converted some things pointed out by cppcheck & clang-tidy to
+        C++11.
+
+        * Fixed a lot of issues pointed out by clang-tidy.
+
+        * Added a function "ForceNoDefault" in the "EbmlElement" class.
+
+        * Added a function "OverwriteData" in the "EbmlElement" class to
+        complement the existing "OverwriteHead" function.
+
+        * Fixed compilation on Windows wrt. winapifamily.h
+
+        * Fixed compilation on Haiku.
+
+        * A C++11 compliant compiler is now required. Several of its
+        features are now used in the source.
+
+2020-05-15  Moritz Bunkus  <mo@bunkus.online>
+
+        * EbmlElement::FindNextElement: fixed a buffer overflow on the
+        stack by one byte when the first byte read had its upper four bits
+        unset.
+
+        * EbmlCrc32: added a explicit assignment operator with default
+        implementation as an explicit copy constructor exists (implicit
+        assignment operators are deprecated in such cases).
+
+2019-12-07  Moritz Bunkus  <moritz@bunkus.org>
+
+        * When reading binary elements with a size of 0, the element was
+        skipped by libebml instead of returned to the calling function.
+
+        * Released v1.3.10.
+
 2019-05-27  Moritz Bunkus  <moritz@bunkus.org>
 
         * Released v1.3.9.

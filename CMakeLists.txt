@@ -1,12 +1,15 @@
 cmake_minimum_required(VERSION 3.1.2)
 
-project(ebml VERSION 1.3.9)
+project(ebml VERSION 1.4.1)
 
 option(DISABLE_PKGCONFIG "Disable PkgConfig module generation" OFF)
 option(DISABLE_CMAKE_CONFIG "Disable CMake package config module generation" OFF)
 option(ENABLE_WIN32_IO "Build the Windows I/O helper class" OFF)
 
 include(GNUInstallDirs)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(libebml_SOURCES
   src/Debug.cpp
@@ -78,8 +81,11 @@ if(WIN32)
   endif()
 endif()
 set_target_properties(ebml PROPERTIES
-  VERSION 4.0.0
-  SOVERSION 4)
+  VERSION 5.0.0
+  SOVERSION 5
+  CXX_VISIBILITY_PRESET hidden
+  VISIBILITY_INLINES_HIDDEN ON
+)
 target_include_directories(ebml
   PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
@@ -117,6 +123,12 @@ if(NOT DISABLE_PKGCONFIG)
   set(libdir "\$\{prefix\}/${CMAKE_INSTALL_LIBDIR}")
   set(includedir "\$\{prefix\}/${CMAKE_INSTALL_INCLUDEDIR}")
   set(PACKAGE_VERSION ${PROJECT_VERSION})
+  if (HAVE_WINAPIFAMILY_H)
+    set(WINAPIFAMILY_PC -DHAVE_WINAPIFAMILY_H)
+  endif()
+  if(NOT BUILD_SHARED_LIBS)
+    set(STATIC_DEFINE_CFLAGS -DEBML_STATIC_DEFINE)
+  endif()
   configure_file(libebml.pc.in libebml.pc @ONLY)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libebml.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 endif()
